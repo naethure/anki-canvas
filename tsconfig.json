@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "allowJs": true,
+    "target": "es2020",
+    "allowJs": false,
     "preserveConstEnums": true,
     "typeRoots": ["./typings", "./node_modules/@types/"],
-    "lib": ["es5", "es6", "es2017", "dom"],
+    "lib": ["es2020", "dom", "dom.iterable"],
     "module": "commonjs",
     "moduleResolution": "node",
     "strict": true,
@@ -17,5 +17,5 @@
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist"]
 }

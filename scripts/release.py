@@ -154,6 +154,6 @@ deck.add_note(note)
 
 package = genanki.Package(deck)
 package.media_files = ['07c60.svg']
-package.write_to_file(os.path.join(root, 'deck.apkg'))
+package.write_to_file(os.path.join(root, '../dist/deck.apkg'))
 
-print('wrote "./scripts/deck.apkg"')
+print('wrote "./dist/deck.apkg"')
