@@ -50,28 +50,25 @@ function init() {
   ): void => {
     evt.preventDefault();
 
-    if (!(evt instanceof TouchEvent) && !(evt instanceof MouseEvent)) {
+    if (!(evt instanceof PointerEvent)) {
       return;
     }
 
-    const touch = evt instanceof TouchEvent ? evt.changedTouches[0] : evt;
     const rect = canvas.getBoundingClientRect();
 
     const point: Point = {
-      x: (touch.pageX - rect.left) * options.hdpiFactor,
-      y: (touch.pageY - rect.top) * options.hdpiFactor,
+      x: (evt.pageX - rect.left) * options.hdpiFactor,
+      y: (evt.pageY - rect.top) * options.hdpiFactor,
+      pressure: evt.pressure,
     };
 
     action(state, point);
   };
 
   const events: Array<[string, Action]> = [
-    ['touchstart', addFirstDrawingPoint],
-    ['touchmove', addDrawingPoint],
-    ['touchend', addLastDrawingPoing],
-    ['mousedown', addFirstDrawingPoint],
-    ['mousemove', addDrawingPoint],
-    ['mouseup', addLastDrawingPoing],
+    ['pointerdown', addFirstDrawingPoint],
+    ['pointermove', addDrawingPoint],
+    ['pointerup', addLastDrawingPoing],
   ];
 
   events.forEach(e => {

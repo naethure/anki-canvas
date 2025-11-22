@@ -59,21 +59,44 @@ export function rendercanvas(
     rendergrid(ctx, canvas.width, canvas.height, config.colorScheme);
 
     ctx.save();
-    ctx.lineWidth = config.lineWidth;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
     for (let i = 0; i < lines.length; i++) {
-      ctx.beginPath();
-      ctx.strokeStyle = config.colorizer(i, lines.length);
       const line = lines[i];
+      if (line.length === 0) {
+        continue;
+      }
+
+      const color = config.colorizer(i, lines.length);
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+
+      if (line.length === 1) {
+        const p = line[0];
+        const pressure = p.pressure ?? 0.5;
+        const width = config.lineWidth * (pressure + 0.5);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, width / 2, 0, Math.PI * 2);
+        ctx.fill();
+        continue;
+      }
+
       for (let j = 1; j < line.length; j++) {
         const src = line[j - 1];
         const dst = line[j];
+
+        const srcPressure = src.pressure ?? 0.5;
+        const dstPressure = dst.pressure ?? 0.5;
+        const avgPressure = (srcPressure + dstPressure) / 2;
+        const width = config.lineWidth * (avgPressure + 0.5);
+
+        ctx.beginPath();
+        ctx.lineWidth = width;
         ctx.moveTo(src.x, src.y);
         ctx.lineTo(dst.x, dst.y);
+        ctx.stroke();
       }
-      ctx.stroke();
     }
 
     ctx.restore();

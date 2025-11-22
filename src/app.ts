@@ -4,6 +4,7 @@ import { defaultStorage, isStorageSupported, dump, parse } from './storage';
 export type Point = {
   readonly x: number;
   readonly y: number;
+  readonly pressure: number;
 };
 
 type S = {
