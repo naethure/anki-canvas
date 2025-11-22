@@ -17,7 +17,11 @@ const canvas = h('canvas', {
 
 renderdom('ac-back', canvas);
 
-const state = map(load(), z => ({ x: z.x * RATIO, y: z.y * RATIO }));
+const state = map(load(), z => ({
+  x: z.x * RATIO,
+  y: z.y * RATIO,
+  pressure: z.pressure,
+}));
 
 rendercanvas(canvas, state, {
   lineWidth: options.backLineWidth * options.hdpiFactor,

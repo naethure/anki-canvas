@@ -45,38 +45,83 @@ function init() {
 
   const state = empty();
 
+  const supportsPointerEvents = 'PointerEvent' in window;
+  const supportsTouchEvents = typeof TouchEvent !== 'undefined';
+
   const handler = (canvas: HTMLCanvasElement, state: State, action: Action) => (
     evt: Event,
   ): void => {
     evt.preventDefault();
 
-    if (!(evt instanceof TouchEvent) && !(evt instanceof MouseEvent)) {
+    if (supportsTouchEvents && evt instanceof TouchEvent) {
+      const touch = evt.changedTouches[0];
+      if (!touch) {
+        return;
+      }
+      const rect = canvas.getBoundingClientRect();
+      const point: Point = {
+        x: (touch.pageX - rect.left) * options.hdpiFactor,
+        y: (touch.pageY - rect.top) * options.hdpiFactor,
+        pressure: getTouchPressure(touch),
+      };
+      action(state, point);
       return;
     }
 
-    const touch = evt instanceof TouchEvent ? evt.changedTouches[0] : evt;
-    const rect = canvas.getBoundingClientRect();
-
-    const point: Point = {
-      x: (touch.pageX - rect.left) * options.hdpiFactor,
-      y: (touch.pageY - rect.top) * options.hdpiFactor,
-    };
-
-    action(state, point);
+    if (evt instanceof MouseEvent) {
+      const rect = canvas.getBoundingClientRect();
+      const point: Point = {
+        x: (evt.pageX - rect.left) * options.hdpiFactor,
+        y: (evt.pageY - rect.top) * options.hdpiFactor,
+        pressure: getPointerPressure(evt),
+      };
+      action(state, point);
+    }
   };
 
-  const events: Array<[string, Action]> = [
-    ['touchstart', addFirstDrawingPoint],
-    ['touchmove', addDrawingPoint],
-    ['touchend', addLastDrawingPoing],
-    ['mousedown', addFirstDrawingPoint],
-    ['mousemove', addDrawingPoint],
-    ['mouseup', addLastDrawingPoing],
-  ];
+  const baseEvents: Array<[string, Action]> = supportsPointerEvents
+    ? [
+        ['pointerdown', addFirstDrawingPoint],
+        ['pointermove', addDrawingPoint],
+        ['pointerup', addLastDrawingPoing],
+        ['pointercancel', addLastDrawingPoing],
+      ]
+    : [
+        ['touchstart', addFirstDrawingPoint],
+        ['touchmove', addDrawingPoint],
+        ['touchend', addLastDrawingPoing],
+        ['touchcancel', addLastDrawingPoing],
+        ['mousedown', addFirstDrawingPoint],
+        ['mousemove', addDrawingPoint],
+        ['mouseup', addLastDrawingPoing],
+      ];
 
-  events.forEach(e => {
+  baseEvents.forEach(e => {
     canvas.addEventListener(e[0], handler(canvas, state, e[1]), false);
   });
+
+  function getPointerPressure(evt: MouseEvent): number {
+    if (supportsPointerEvents && evt instanceof PointerEvent) {
+      const raw = evt.pressure;
+      if (raw === 0 && evt.buttons !== 0) {
+        return 0.5;
+      }
+      return raw || 1;
+    }
+
+    if (typeof evt.buttons === 'number' && evt.buttons > 0) {
+      return 1;
+    }
+
+    return 1;
+  }
+
+  function getTouchPressure(touch: Touch): number {
+    if (typeof touch.force === 'number' && touch.force > 0) {
+      return touch.force;
+    }
+    return 1;
+  }
 
   function renderloop() {
     rendercanvas(canvas, state, {

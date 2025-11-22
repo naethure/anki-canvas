@@ -7,6 +7,14 @@ this is meant for **use cases where the the user has to draw a shape as the
 answer to a card** (for example: **Kanji/Hanzi drawing practice**,
 Remembering the Kanji, etc).
 
+### Pressure sensitivity
+
+Stylus devices that expose pointer or touch pressure (for example Samsung S-Pen
+or Wacom pens) now render thicker or thinner strokes based on how hard you press
+while still tracking each stroke independently. Existing cards and drawings are
+automatically upgraded, so you can mix older mouse-based drawings with new
+pressure-aware strokes without losing colorization per stroke.
+
 
 ### How to install
 

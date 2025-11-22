@@ -1,4 +1,4 @@
-import { State, willdisplay } from './app';
+import { Point, State, willdisplay } from './app';
 import { ColorScheme } from './options';
 
 const DEFAULT_CONFIG = {
@@ -64,22 +64,56 @@ export function rendercanvas(
     ctx.lineJoin = 'round';
 
     for (let i = 0; i < lines.length; i++) {
-      ctx.beginPath();
-      ctx.strokeStyle = config.colorizer(i, lines.length);
       const line = lines[i];
-      for (let j = 1; j < line.length; j++) {
-        const src = line[j - 1];
-        const dst = line[j];
-        ctx.moveTo(src.x, src.y);
-        ctx.lineTo(dst.x, dst.y);
-      }
-      ctx.stroke();
+      const color = config.colorizer(i, lines.length);
+      drawStroke(ctx, line, color, config.lineWidth);
     }
 
     ctx.restore();
 
     return true;
   });
+}
+
+function drawStroke(
+  ctx: CanvasRenderingContext2D,
+  line: Point[],
+  color: string,
+  baseWidth: number,
+) {
+  if (line.length === 0) {
+    return;
+  }
+
+  ctx.strokeStyle = color;
+  ctx.fillStyle = color;
+
+  if (line.length === 1) {
+    drawDot(ctx, line[0], baseWidth);
+    return;
+  }
+
+  for (let i = 1; i < line.length; i++) {
+    const src = line[i - 1];
+    const dst = line[i];
+    const avgPressure = (src.pressure + dst.pressure) / 2;
+    ctx.lineWidth = baseWidth * avgPressure;
+    ctx.beginPath();
+    ctx.moveTo(src.x, src.y);
+    ctx.lineTo(dst.x, dst.y);
+    ctx.stroke();
+  }
+}
+
+function drawDot(
+  ctx: CanvasRenderingContext2D,
+  point: Point,
+  baseWidth: number,
+) {
+  const radius = (baseWidth * point.pressure) / 2;
+  ctx.beginPath();
+  ctx.arc(point.x, point.y, radius, 0, Math.PI * 2);
+  ctx.fill();
 }
 
 export function renderdom(id: string, t: HTMLElement) {
