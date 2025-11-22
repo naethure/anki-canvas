@@ -38,10 +38,10 @@
   },
   "scripts": {
     "test": "jest",
-    "start": "yarn webpack-dev-server",
-    "build": "yarn webpack",
-    "dist": "yarn build && yarn ts-node scripts/dist.ts",
-    "release": "rm -r dist && yarn build && cd scripts && pip install -r requirements.txt && ./release.py"
+    "start": "webpack-dev-server",
+    "build": "webpack",
+    "dist": "npm run build && ts-node scripts/dist.ts",
+    "release": "rm -r dist && npm run build && cd scripts && pip install -r requirements.txt && ./release.py"
   },
   "jest": {
     "globals": {
