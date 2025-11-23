@@ -45,6 +45,14 @@ function rendergrid(
   ctx.restore();
 }
 
+function getLineWidth(pressure: number, baseWidth: number) {
+  const adjustedPressure = options.pressureCurve(pressure);
+  const multiplier = adjustedPressure >= 0.5
+    ? Math.pow(options.pressureLineWidthGrowMultiplier, 2 * adjustedPressure - 1)
+    : Math.pow(options.pressureLineWidthShrinkMultiplier, 1 - 2 * adjustedPressure);
+  return baseWidth * multiplier;
+}
+
 export function rendercanvas(
   canvas: HTMLCanvasElement,
   s: State,
@@ -67,7 +75,7 @@ export function rendercanvas(
     ctx.lineJoin = 'round';
 
     for (let i = 0; i < lines.length; i++) {
-      ctx.strokeStyle = config.colorizer(i, lines.length);
+      ctx.fillStyle = config.colorizer(i, lines.length);
       const line = lines[i];
       for (let j = 1; j < line.length; j++) {
         const src = line[j - 1];
@@ -75,17 +83,29 @@ export function rendercanvas(
 
         const srcPressure = src.pressure ?? 0.5;
         const dstPressure = dst.pressure ?? 0.5;
-        const avgPressure = (srcPressure + dstPressure) / 2;
-        const adjustedPressure = options.pressureCurve(avgPressure);
-        const multiplier = adjustedPressure >= 0.5
-          ? Math.pow(options.pressureLineWidthGrowMultiplier, 2 * adjustedPressure - 1)
-          : Math.pow(options.pressureLineWidthShrinkMultiplier, 1 - 2 * adjustedPressure);
-        ctx.lineWidth = config.lineWidth * multiplier;
 
-        ctx.beginPath();
-        ctx.moveTo(src.x, src.y);
-        ctx.lineTo(dst.x, dst.y);
-        ctx.stroke();
+        const wStart = getLineWidth(srcPressure, config.lineWidth);
+        const wEnd = getLineWidth(dstPressure, config.lineWidth);
+
+        const dx = dst.x - src.x;
+        const dy = dst.y - src.y;
+        const len = Math.sqrt(dx * dx + dy * dy);
+
+        if (len > 0) {
+          const nx = -dy / len;
+          const ny = dx / len;
+          const angleN = Math.atan2(ny, nx);
+
+          ctx.beginPath();
+          ctx.arc(dst.x, dst.y, wEnd / 2, angleN, angleN + Math.PI, true);
+          ctx.arc(src.x, src.y, wStart / 2, angleN + Math.PI, angleN, true);
+          ctx.closePath();
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.arc(src.x, src.y, wStart / 2, 0, 2 * Math.PI);
+          ctx.fill();
+        }
       }
     }
 
