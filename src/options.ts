@@ -17,8 +17,12 @@ const defaults = {
   backCanvasSize: 150,
   backBaseLineWidth: 3.5,
 
-  pressureCurve: (x: number) => Math.sqrt(x),
-  pressureLineWidthMultiplier: 2,
+  pressureCurve: (x: number) => Math.pow(x, 2),
+  pressureLineWidthGrowMultiplier: 2,
+  pressureLineWidthShrinkMultiplier: .1,
+
+  pressureUsedForMouse: .5,
+  pressureUsedForTouch: .5,
 
   showHorizontalGuide: true,
   showVerticalGuide: true,
@@ -102,7 +106,11 @@ export const options = {
   backBaseLineWidth: userOption('backBaseLineWidth') ?? defaults.backBaseLineWidth,
   
   pressureCurve: userOption('pressureCurve') ?? defaults.pressureCurve,
-  pressureLineWidthMultiplier: userOption('pressureLineWidthMultiplier') ?? defaults.pressureLineWidthMultiplier,
+  pressureLineWidthGrowMultiplier: userOption('pressureLineWidthGrowMultiplier') ?? defaults.pressureLineWidthGrowMultiplier,
+  pressureLineWidthShrinkMultiplier: userOption('pressureLineWidthShrinkMultiplier') ?? defaults.pressureLineWidthShrinkMultiplier,
+  
+  pressureUsedForMouse: userOption('pressureUsedForMouse') ?? defaults.pressureUsedForMouse,
+  pressureUsedForTouch: userOption('pressureUsedForTouch') ?? defaults.pressureUsedForTouch,
 
   showHorizontalGuide: userOption('showHorizontalGuide') ?? defaults.showHorizontalGuide,
   showVerticalGuide: userOption('showVerticalGuide') ?? defaults.showVerticalGuide,

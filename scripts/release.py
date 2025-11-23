@@ -15,7 +15,7 @@ options = '''
 <script>
 window.AnkiCanvasOptions = {
   frontCanvasSize: 300,
-  frontBaseLineWidth: 5,
+  frontBaseLineWidth: 6,
 
   backCanvasSize: 150,
   backBaseLineWidth: 3,
@@ -27,8 +27,12 @@ window.AnkiCanvasOptions = {
   // pressureCurve: (x) => x, // Linear curve (no modification).
   // pressureCurve: (x) => 0.5, // Constant curve (disables pressure sensitivity).
 
-  pressureLineWidthMultiplier: 4, // Multiplier for pressure effect on line width (bidirectional, so 2 means minimum width is half base width, maximum is double)
+  pressureLineWidthGrowMultiplier: 2, // Multiplier for pressure effect on line width when increasing pressure over midpoint (2 means maximum width is double base width)
+  pressureLineWidthShrinkMultiplier: .1, // Multiplier for pressure effect on line width when decreasing pressure below midpoint (0.5 means minimum width is one half base width)
 
+  pressureUsedForMouse: .65, // Constant pressure value to use for mouse input (0 to 1)
+  pressureUsedForTouch: .65, // Constant pressure value to use for touch input (0 to 1)
+  
   showHorizontalGuide: true,
   showVerticalGuide: true,
   showDiagonal1Guide: false,

@@ -61,11 +61,18 @@ function init() {
 
     for(const e of events) {
       const rect = canvas.getBoundingClientRect();
+      
+      var pressure: number = e.pressure;
+      if(e.pointerType === 'touch') {
+        pressure = options.pressureUsedForTouch;
+      } else if(e.pointerType === 'mouse') {
+        pressure = options.pressureUsedForMouse;
+      }
 
       const point: Point = {
         x: (e.clientX - rect.left) * options.hdpiFactor,
         y: (e.clientY - rect.top) * options.hdpiFactor,
-        pressure: e.pressure,
+        pressure: pressure,
       };
       
       action(state, point);

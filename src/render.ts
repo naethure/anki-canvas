@@ -77,7 +77,10 @@ export function rendercanvas(
         const dstPressure = dst.pressure ?? 0.5;
         const avgPressure = (srcPressure + dstPressure) / 2;
         const adjustedPressure = options.pressureCurve(avgPressure);
-        ctx.lineWidth = config.lineWidth * Math.pow(options.pressureLineWidthMultiplier, 2 * adjustedPressure - 1);
+        const multiplier = adjustedPressure >= 0.5
+          ? Math.pow(options.pressureLineWidthGrowMultiplier, 2 * adjustedPressure - 1)
+          : Math.pow(options.pressureLineWidthShrinkMultiplier, 1 - 2 * adjustedPressure);
+        ctx.lineWidth = config.lineWidth * multiplier;
 
         ctx.beginPath();
         ctx.moveTo(src.x, src.y);
