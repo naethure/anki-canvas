@@ -15,9 +15,24 @@ options = '''
 <script>
 window.AnkiCanvasOptions = {
   frontCanvasSize: 300,
-  frontLineWidth: 7,
+  frontBaseLineWidth: 5,
+
   backCanvasSize: 150,
-  backLineWidth: 3.5,
+  backBaseLineWidth: 3,
+
+  // Function mapping pressure (0 to 1) to line width factor. Uncomment one of the options below to choose, or define your own.
+
+  // pressureCurve: (x) => Math.sqrt(x), // Square root curve for more sensitivity at low pressure, tapering off at high pressure.
+     pressureCurve: (x) => Math.pow(x, 2), // Quadratic curve for less sensitivity at low pressure, more at high pressure.
+  // pressureCurve: (x) => x, // Linear curve (no modification).
+  // pressureCurve: (x) => 0.5, // Constant curve (disables pressure sensitivity).
+
+  pressureLineWidthMultiplier: 4, // Multiplier for pressure effect on line width (bidirectional, so 2 means minimum width is half base width, maximum is double)
+
+  showHorizontalGuide: true,
+  showVerticalGuide: true,
+  showDiagonal1Guide: false,
+  showDiagonal2Guide: false,
 
   // 'auto' is a special value that will automatically select either 'light' or
   // 'dark' depending on Anki's "Night Mode" status. If you wish to force a
@@ -37,6 +52,15 @@ window.AnkiCanvasOptions = {
       backBrushColorizer: 'spectrum',
     },
     dark: {
+      brush: '#ddd',
+      grid: '#666',
+      gridBg: '#333',
+      buttonIcon: '#fff',
+      buttonBg: '#666',
+      frontBrushColorizer: 'none',
+      backBrushColorizer: 'spectrum',
+    },
+    black: {
       brush: '#fff',
       grid: '#646464',
       gridBg: '#000',

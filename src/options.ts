@@ -12,9 +12,19 @@ export type ColorScheme = {
 
 const defaults = {
   frontCanvasSize: 300,
-  frontLineWidth: 7,
+  frontBaseLineWidth: 7,
+
   backCanvasSize: 150,
-  backLineWidth: 3.5,
+  backBaseLineWidth: 3.5,
+
+  pressureCurve: (x: number) => Math.sqrt(x),
+  pressureLineWidthMultiplier: 2,
+
+  showHorizontalGuide: true,
+  showVerticalGuide: true,
+  showDiagonal1Guide: false,
+  showDiagonal2Guide: false,
+
   colorScheme: 'auto',
   colorSchemes: {
     light: {
@@ -86,9 +96,19 @@ function colorScheme(): ColorScheme {
 
 export const options = {
   frontCanvasSize: userOption('frontCanvasSize') ?? defaults.frontCanvasSize,
-  frontLineWidth: userOption('frontLineWidth') ?? defaults.frontLineWidth,
+  frontBaseLineWidth: userOption('frontBaseLineWidth') ?? defaults.frontBaseLineWidth,
+  
   backCanvasSize: userOption('backCanvasSize') ?? defaults.backCanvasSize,
-  backLineWidth: userOption('backLineWidth') ?? defaults.backLineWidth,
+  backBaseLineWidth: userOption('backBaseLineWidth') ?? defaults.backBaseLineWidth,
+  
+  pressureCurve: userOption('pressureCurve') ?? defaults.pressureCurve,
+  pressureLineWidthMultiplier: userOption('pressureLineWidthMultiplier') ?? defaults.pressureLineWidthMultiplier,
+
+  showHorizontalGuide: userOption('showHorizontalGuide') ?? defaults.showHorizontalGuide,
+  showVerticalGuide: userOption('showVerticalGuide') ?? defaults.showVerticalGuide,
+  showDiagonal1Guide: userOption('showDiagonal1Guide') ?? defaults.showDiagonal1Guide,
+  showDiagonal2Guide: userOption('showDiagonal2Guide') ?? defaults.showDiagonal2Guide,
+
   colorScheme,
   hdpiFactor,
 };

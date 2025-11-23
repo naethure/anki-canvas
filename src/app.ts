@@ -4,6 +4,7 @@ import { defaultStorage, isStorageSupported, dump, parse } from './storage';
 export type Point = {
   readonly x: number;
   readonly y: number;
+  readonly pressure: number;
 };
 
 type S = {
@@ -90,8 +91,11 @@ export function addFirstDrawingPoint(s: State, p: Point): void {
   addDrawingPoint(s, p);
 }
 
-export function addLastDrawingPoing(s: State, p: Point): void {
+export function addLastDrawingPoint(s: State, p: Point): void {
   const state = iso.unwrap(s);
+  if(!state.down) {
+    return;
+  }
   state.drawing.push(p);
   state.lines.push(state.drawing);
   state.drawing = [];
