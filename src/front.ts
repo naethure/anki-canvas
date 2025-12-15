@@ -8,7 +8,7 @@ import {
   empty,
   addFirstDrawingPoint,
   addDrawingPoint,
-  addLastDrawingPoing,
+  addLastDrawingPoint,
   undo,
   clear,
 } from './app';
@@ -50,38 +50,51 @@ function init() {
   ): void => {
     evt.preventDefault();
 
-    if (!(evt instanceof TouchEvent) && !(evt instanceof MouseEvent)) {
+    if (!(evt instanceof PointerEvent)) {
       return;
     }
+    var events = [evt];
 
-    const touch = evt instanceof TouchEvent ? evt.changedTouches[0] : evt;
-    const rect = canvas.getBoundingClientRect();
+    if(evt.getCoalescedEvents && evt.getCoalescedEvents()?.length > 0) {
+      events = evt.getCoalescedEvents();
+    }
 
-    const point: Point = {
-      x: (touch.pageX - rect.left) * options.hdpiFactor,
-      y: (touch.pageY - rect.top) * options.hdpiFactor,
-    };
+    for(const e of events) {
+      const rect = canvas.getBoundingClientRect();
+      
+      var pressure: number = e.pressure;
+      if(e.pointerType === 'touch') {
+        pressure = options.pressureUsedForTouch;
+      } else if(e.pointerType === 'mouse') {
+        pressure = options.pressureUsedForMouse;
+      }
 
-    action(state, point);
+      const point: Point = {
+        x: (e.clientX - rect.left) * options.hdpiFactor,
+        y: (e.clientY - rect.top) * options.hdpiFactor,
+        pressure: pressure,
+      };
+      
+      action(state, point);
+    }
   };
 
   const events: Array<[string, Action]> = [
-    ['touchstart', addFirstDrawingPoint],
-    ['touchmove', addDrawingPoint],
-    ['touchend', addLastDrawingPoing],
-    ['mousedown', addFirstDrawingPoint],
-    ['mousemove', addDrawingPoint],
-    ['mouseup', addLastDrawingPoing],
+    ['pointerdown', addFirstDrawingPoint],
+    ['pointermove', addDrawingPoint],
+    ['pointerup', addLastDrawingPoint],
+    ['pointerleave', addLastDrawingPoint],
+    ['pointercancel', addLastDrawingPoint],
   ];
 
   events.forEach(e => {
-    canvas.addEventListener(e[0], handler(canvas, state, e[1]), false);
+    canvas.addEventListener(e[0], handler(canvas, state, e[1]), { passive: false });
   });
 
   function renderloop() {
     rendercanvas(canvas, state, {
       colorizer: getColorizer(colorScheme, colorScheme.frontBrushColorizer),
-      lineWidth: options.frontLineWidth * options.hdpiFactor,
+      lineWidth: options.frontBaseLineWidth * options.hdpiFactor,
       colorScheme,
     });
     requestAnimationFrame(renderloop);

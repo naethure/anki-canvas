@@ -12,9 +12,23 @@ export type ColorScheme = {
 
 const defaults = {
   frontCanvasSize: 300,
-  frontLineWidth: 7,
+  frontBaseLineWidth: 7,
+
   backCanvasSize: 150,
-  backLineWidth: 3.5,
+  backBaseLineWidth: 3.5,
+
+  pressureCurve: (x: number) => Math.pow(x, 2),
+  pressureLineWidthGrowMultiplier: 2,
+  pressureLineWidthShrinkMultiplier: .1,
+
+  pressureUsedForMouse: .5,
+  pressureUsedForTouch: .5,
+
+  showHorizontalGuide: true,
+  showVerticalGuide: true,
+  showDiagonal1Guide: false,
+  showDiagonal2Guide: false,
+
   colorScheme: 'auto',
   colorSchemes: {
     light: {
@@ -86,9 +100,23 @@ function colorScheme(): ColorScheme {
 
 export const options = {
   frontCanvasSize: userOption('frontCanvasSize') ?? defaults.frontCanvasSize,
-  frontLineWidth: userOption('frontLineWidth') ?? defaults.frontLineWidth,
+  frontBaseLineWidth: userOption('frontBaseLineWidth') ?? defaults.frontBaseLineWidth,
+  
   backCanvasSize: userOption('backCanvasSize') ?? defaults.backCanvasSize,
-  backLineWidth: userOption('backLineWidth') ?? defaults.backLineWidth,
+  backBaseLineWidth: userOption('backBaseLineWidth') ?? defaults.backBaseLineWidth,
+  
+  pressureCurve: userOption('pressureCurve') ?? defaults.pressureCurve,
+  pressureLineWidthGrowMultiplier: userOption('pressureLineWidthGrowMultiplier') ?? defaults.pressureLineWidthGrowMultiplier,
+  pressureLineWidthShrinkMultiplier: userOption('pressureLineWidthShrinkMultiplier') ?? defaults.pressureLineWidthShrinkMultiplier,
+  
+  pressureUsedForMouse: userOption('pressureUsedForMouse') ?? defaults.pressureUsedForMouse,
+  pressureUsedForTouch: userOption('pressureUsedForTouch') ?? defaults.pressureUsedForTouch,
+
+  showHorizontalGuide: userOption('showHorizontalGuide') ?? defaults.showHorizontalGuide,
+  showVerticalGuide: userOption('showVerticalGuide') ?? defaults.showVerticalGuide,
+  showDiagonal1Guide: userOption('showDiagonal1Guide') ?? defaults.showDiagonal1Guide,
+  showDiagonal2Guide: userOption('showDiagonal2Guide') ?? defaults.showDiagonal2Guide,
+
   colorScheme,
   hdpiFactor,
 };

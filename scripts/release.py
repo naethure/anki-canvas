@@ -15,9 +15,28 @@ options = '''
 <script>
 window.AnkiCanvasOptions = {
   frontCanvasSize: 300,
-  frontLineWidth: 7,
+  frontBaseLineWidth: 6,
+
   backCanvasSize: 150,
-  backLineWidth: 3.5,
+  backBaseLineWidth: 3,
+
+  // Function mapping pressure (0 to 1) to line width factor. Uncomment one of the options below to choose, or define your own.
+
+  // pressureCurve: (x) => Math.sqrt(x), // Square root curve for more sensitivity at low pressure, tapering off at high pressure.
+     pressureCurve: (x) => Math.pow(x, 2), // Quadratic curve for less sensitivity at low pressure, more at high pressure.
+  // pressureCurve: (x) => x, // Linear curve (no modification).
+  // pressureCurve: (x) => 0.5, // Constant curve (disables pressure sensitivity).
+
+  pressureLineWidthGrowMultiplier: 2, // Multiplier for pressure effect on line width when increasing pressure over midpoint (2 means maximum width is double base width)
+  pressureLineWidthShrinkMultiplier: .1, // Multiplier for pressure effect on line width when decreasing pressure below midpoint (0.5 means minimum width is one half base width)
+
+  pressureUsedForMouse: .65, // Constant pressure value to use for mouse input (0 to 1)
+  pressureUsedForTouch: .65, // Constant pressure value to use for touch input (0 to 1)
+  
+  showHorizontalGuide: true,
+  showVerticalGuide: true,
+  showDiagonal1Guide: false,
+  showDiagonal2Guide: false,
 
   // 'auto' is a special value that will automatically select either 'light' or
   // 'dark' depending on Anki's "Night Mode" status. If you wish to force a
@@ -34,16 +53,25 @@ window.AnkiCanvasOptions = {
       buttonIcon: '#464646',
       buttonBg: '#dcdcdc',
       frontBrushColorizer: 'none', // none | spectrum | contrast
-      backBrushColorizer: 'spectrum',
+      backBrushColorizer: 'prebaked',
     },
     dark: {
+      brush: '#ddd',
+      grid: '#666',
+      gridBg: '#333',
+      buttonIcon: '#fff',
+      buttonBg: '#666',
+      frontBrushColorizer: 'none',
+      backBrushColorizer: 'prebaked',
+    },
+    black: {
       brush: '#fff',
       grid: '#646464',
       gridBg: '#000',
       buttonIcon: '#000',
       buttonBg: '#646464',
       frontBrushColorizer: 'none',
-      backBrushColorizer: 'spectrum',
+      backBrushColorizer: 'prebaked',
     },
   },
 }

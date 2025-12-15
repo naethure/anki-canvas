@@ -77,13 +77,50 @@ export function contrast(idx: number, _count: number, s = 0.95, v = 0.75): HEX {
   const angle = 0.618033988749895; // conjugate of the golden ratio
   return hex(rgb({ h: idx / angle, s, v }));
 }
+export function prebaked(idx: number, _count: number, _s = 0.95, _v = 0.75): HEX {
+  const rgb = [
+    "#ff0000", 
+    "#ff7f00", 
+    "#ffff00", 
+    "#54ff00", 
+    "#00ffd4", 
+    "#003fff", 
+    "#9400ff", 
+    "#ff00d4", 
+    "#b24759", 
+    "#b26b47", 
+    "#b2a047", 
+    "#7cb247", 
+    "#47b28e", 
+    "#4774b2", 
+    "#7447b2", 
+    "#b247b2", 
+    "#661000", 
+    "#664400", 
+    "#556600", 
+    "#116600", 
+    "#006666", 
+    "#000866", 
+    "#4c0066", 
+    "#660044", 
+    "#e58989", 
+    "#e5b789", 
+    "#e5e589", 
+    "#a8e589", 
+    "#89e5d6", 
+    "#89a0e5", 
+    "#bf89e5", 
+    "#e589d6",
+  ];
+  return rgb[idx % rgb.length];
+}
 
 export const none = (colorscheme: ColorScheme) => (
   _idx: number,
   _count: number,
 ): HEX => colorscheme.brush;
 
-export type Colorizers = 'none' | 'spectrum' | 'contrast';
+export type Colorizers = 'none' | 'spectrum' | 'contrast' | 'prebaked';
 
 export function getColorizer(colorscheme: ColorScheme, c: Colorizers) {
   switch (c) {
@@ -93,5 +130,7 @@ export function getColorizer(colorscheme: ColorScheme, c: Colorizers) {
       return spectrum;
     case 'contrast':
       return contrast;
+    case 'prebaked':
+      return prebaked;
   }
 }

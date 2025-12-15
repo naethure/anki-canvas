@@ -1,7 +1,7 @@
 import * as hs from 'hyperscript';
 import * as styles from './styles';
 import { renderdom, rendercanvas } from './render';
-import { map, load } from './app';
+import { map, load, getHdpiFactor } from './app';
 import { getColorizer } from './brushcolor';
 import { options } from './options';
 
@@ -17,10 +17,18 @@ const canvas = h('canvas', {
 
 renderdom('ac-back', canvas);
 
-const state = map(load(), z => ({ x: z.x * RATIO, y: z.y * RATIO }));
+const frontState = load();
+const hdpiScale = options.hdpiFactor / getHdpiFactor(frontState);
+const coordinateScale = RATIO * hdpiScale;
+
+const state = map(frontState, z => ({
+  ...z,
+  x: z.x * coordinateScale,
+  y: z.y * coordinateScale,
+}));
 
 rendercanvas(canvas, state, {
-  lineWidth: options.backLineWidth * options.hdpiFactor,
+  lineWidth: options.backBaseLineWidth * options.hdpiFactor,
   colorizer: getColorizer(colorScheme, colorScheme.backBrushColorizer),
   colorScheme,
 });

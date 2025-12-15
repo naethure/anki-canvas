@@ -1,9 +1,12 @@
 import { Newtype, _iso } from './newtype';
 import { defaultStorage, isStorageSupported, dump, parse } from './storage';
 
+const defaultHdpiFactor = window.devicePixelRatio ?? 2;
+
 export type Point = {
   readonly x: number;
   readonly y: number;
+  readonly pressure: number;
 };
 
 type S = {
@@ -11,6 +14,7 @@ type S = {
   drawing: Point[];
   dirty: boolean;
   down: boolean;
+  hdpiFactor: number;
 };
 
 export interface State extends Newtype<{ readonly State: unique symbol }, S> {}
@@ -34,7 +38,16 @@ export function load(): State {
   if (item === null || item === undefined) {
     return empty();
   }
-  return iso.wrap({ ...parse(item), dirty: true });
+  const parsed = parse(item) as Partial<S>;
+  const hdpiFactor =
+    typeof parsed.hdpiFactor === 'number' ? parsed.hdpiFactor : defaultHdpiFactor;
+  return iso.wrap({
+    lines: parsed.lines ?? [],
+    drawing: parsed.drawing ?? [],
+    dirty: true,
+    down: parsed.down ?? false,
+    hdpiFactor,
+  });
 }
 
 export function empty(): State {
@@ -43,6 +56,7 @@ export function empty(): State {
     drawing: [],
     dirty: true,
     down: false,
+    hdpiFactor: defaultHdpiFactor,
   };
 
   save(result);
@@ -53,7 +67,12 @@ export function map(s: State, cb: (x: Point) => Point): State {
   const state = iso.unwrap(s);
   const dup: S = parse(dump(state));
   dup.lines = dup.lines.map(l => l.map(cb));
+  dup.dirty = true;
   return iso.wrap(dup);
+}
+
+export function getHdpiFactor(s: State): number {
+  return iso.unwrap(s).hdpiFactor;
 }
 
 export function undo(s: State): void {
@@ -90,8 +109,11 @@ export function addFirstDrawingPoint(s: State, p: Point): void {
   addDrawingPoint(s, p);
 }
 
-export function addLastDrawingPoing(s: State, p: Point): void {
+export function addLastDrawingPoint(s: State, p: Point): void {
   const state = iso.unwrap(s);
+  if(!state.down) {
+    return;
+  }
   state.drawing.push(p);
   state.lines.push(state.drawing);
   state.drawing = [];

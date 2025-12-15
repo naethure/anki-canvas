@@ -5,6 +5,7 @@ export const canvas = (scheme: ColorScheme) => ({
   width: `${options.frontCanvasSize}px`,
   border: `2px solid ${scheme.grid}`,
   background: scheme.gridBg,
+  'touch-action': 'none',
 });
 
 export const result = (scheme: ColorScheme) => ({
@@ -13,6 +14,7 @@ export const result = (scheme: ColorScheme) => ({
   width: `${options.backCanvasSize}px`,
   border: `1px solid ${scheme.grid}`,
   background: scheme.gridBg,
+  'touch-action': 'none',
 });
 
 export const wrapper = (_scheme: ColorScheme) => ({
