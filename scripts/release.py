@@ -53,7 +53,7 @@ window.AnkiCanvasOptions = {
       buttonIcon: '#464646',
       buttonBg: '#dcdcdc',
       frontBrushColorizer: 'none', // none | spectrum | contrast
-      backBrushColorizer: 'spectrum',
+      backBrushColorizer: 'prebaked',
     },
     dark: {
       brush: '#ddd',
@@ -62,7 +62,7 @@ window.AnkiCanvasOptions = {
       buttonIcon: '#fff',
       buttonBg: '#666',
       frontBrushColorizer: 'none',
-      backBrushColorizer: 'spectrum',
+      backBrushColorizer: 'prebaked',
     },
     black: {
       brush: '#fff',
@@ -71,7 +71,7 @@ window.AnkiCanvasOptions = {
       buttonIcon: '#000',
       buttonBg: '#646464',
       frontBrushColorizer: 'none',
-      backBrushColorizer: 'spectrum',
+      backBrushColorizer: 'prebaked',
     },
   },
 }
