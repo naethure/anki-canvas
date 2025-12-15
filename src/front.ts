@@ -88,7 +88,7 @@ function init() {
   ];
 
   events.forEach(e => {
-    canvas.addEventListener(e[0], handler(canvas, state, e[1]), false);
+    canvas.addEventListener(e[0], handler(canvas, state, e[1]), { passive: false });
   });
 
   function renderloop() {
